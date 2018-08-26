@@ -14,5 +14,6 @@
     <string name="dificil">Difícil</string>
     <string name="cancelar">Cancelar</string>
     <string name="juegoterminado">Juego Terminado</string>
+    <string name="ingreseeltiempodeljuego">Ingrese el tiempo del juego</string>
 
 </resources>

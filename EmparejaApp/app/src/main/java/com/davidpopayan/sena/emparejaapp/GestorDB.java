@@ -36,10 +36,10 @@ public class GestorDB extends SQLiteOpenHelper {
     }
 
     //Función que lista en orden descendente los valores de la base de datos
-    public List<Score> scoreList(int modo, int dificultad){
+    public List<Score> scoreList(int dificultad){
         List<Score> results = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM SCORE WHERE MODO="+modo+" AND DIFICULTAD="+dificultad+" ORDER BY PUNTAJE DESC, TIEMPO ASC;",null);
+        Cursor cursor = db.rawQuery("SELECT * FROM SCORE WHERE DIFICULTAD="+dificultad+" ORDER BY PUNTAJE DESC, TIEMPO ASC;",null);
         if (cursor.moveToFirst()){
             do {
                 Score score = new Score();
