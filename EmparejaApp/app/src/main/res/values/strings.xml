@@ -3,8 +3,15 @@
     <string name="ingresejugador1">Ingrese el nombre del Jugador 1</string>
     <string name="ingreseelnombredelJugador2">Ingrese el nombre del Jugador 2</string>
     <string name="aceptar">Aceptar</string>
-    
+
     <string name="facebook_app_id">465373397310348</string>
     <string name="facebook_login_protocol_scheme">fb465373397310348</string>
+    <string name="jugar">Jugar</string>
+    <string name="configuracion">Configuración</string>
+    <string name="puntuacion">Puntuación</string>
+    <string name="facil">Fácil</string>
+    <string name="medio">Medio</string>
+    <string name="dificil">Difícil</string>
+    <string name="cancelar">Cancelar</string>
 
 </resources>
