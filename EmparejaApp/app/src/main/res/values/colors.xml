@@ -2,6 +2,9 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#05B0D8</color>
     <color name="transparente">#17ffffff</color>
+    <color name="azul">#011033</color>
+    <color name="rosado">#FF00DB</color>
+    <color name="claro">#05B0D8</color>
 </resources>
