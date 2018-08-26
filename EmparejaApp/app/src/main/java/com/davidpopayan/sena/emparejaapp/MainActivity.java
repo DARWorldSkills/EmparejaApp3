@@ -22,7 +22,6 @@ import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnI;
     CallbackManager callbackManager;
     ShareDialog shareDialog;
 
@@ -34,30 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
        // printKeyHash();
         inicializar();
-        btnI = findViewById(R.id.btnI);
-
-
-
-        btnI.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                ShareLinkContent content = new ShareLinkContent.Builder()
-                        .setQuote("")
-                        .setContentUrl(Uri.parse(""))
-                        .setShareHashtag(new ShareHashtag.Builder()
-                        .setHashtag("")
-                        .build())
-                        .build();
-
-                if (shareDialog.canShow(ShareLinkContent.class)){
-
-                    shareDialog.show(content);
-                }
-
-
-            }
-        });
 
 
     }
@@ -67,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         shareDialog = new ShareDialog(this);
 
     }
+
+
 
     private void printKeyHash() {
 

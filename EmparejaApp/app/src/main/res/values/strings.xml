@@ -13,5 +13,6 @@
     <string name="medio">Medio</string>
     <string name="dificil">Difícil</string>
     <string name="cancelar">Cancelar</string>
+    <string name="juegoterminado">Juego Terminado</string>
 
 </resources>

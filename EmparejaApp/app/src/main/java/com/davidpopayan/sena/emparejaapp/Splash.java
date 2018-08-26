@@ -41,8 +41,14 @@ public class Splash extends AppCompatActivity {
                         jugador1 = txtJugador1.getText().toString();
                         jugador2 = txtJugador2.getText().toString();
                         if (jugador1.length()<1 || jugador2.length()<1){
-                            Toast.makeText(Splash.this, "", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Splash.this, "Faltan campos por ingresar", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Intent intent = new Intent(Splash.this,MenuT.class);
+                            startActivity(intent);
+                            dialog.cancel();
+                            finish();
                         }
+
                     }
                 });
                 dialog.setCancelable(false);
