@@ -3,7 +3,7 @@ package com.davidpopayan.sena.emparejaapp;
 public class Score {
     //Declaración de variables
     private String nombre;
-    private int puntaje, modo, dificultad;
+    private int puntaje, modo, dificultad, tiempo;
 
     //Constructor vacio
     public Score() {
@@ -40,5 +40,13 @@ public class Score {
 
     public void setDificultad(int dificultad) {
         this.dificultad = dificultad;
+    }
+
+    public int getTiempo() {
+        return tiempo;
+    }
+
+    public void setTiempo(int tiempo) {
+        this.tiempo = tiempo;
     }
 }

@@ -18,7 +18,7 @@ public class GestorDB extends SQLiteOpenHelper {
     //Método para cuando se crea la base de datos implementar algunas funciones como crear la table SCORE
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE SCORE (NOMBRE TEXT, PUNTAJE INTEGER, MODO INTEGER, DIFICULTAD INTEGER)");
+        db.execSQL("CREATE TABLE SCORE (NOMBRE TEXT, PUNTAJE INTEGER, MODO INTEGER, DIFICULTAD INTEGER, TIEMPO INTEGER)");
 
     }
 
@@ -30,6 +30,7 @@ public class GestorDB extends SQLiteOpenHelper {
         values.put("PUNTAJE",score.getPuntaje());
         values.put("MODO",score.getModo());
         values.put("DIFICULTAD",score.getDificultad());
+        values.put("TIEMPO",score.getTiempo());
         db.insert("SCORE",null,values);
         db.close();
     }
@@ -38,7 +39,7 @@ public class GestorDB extends SQLiteOpenHelper {
     public List<Score> scoreList(int modo, int dificultad){
         List<Score> results = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM SCORE WHERE MODO="+modo+" AND DIFICULTAD="+dificultad+" ORDER BY PUNTAJE DESC;",null);
+        Cursor cursor = db.rawQuery("SELECT * FROM SCORE WHERE MODO="+modo+" AND DIFICULTAD="+dificultad+" ORDER BY PUNTAJE DESC, TIEMPO ASC;",null);
         if (cursor.moveToFirst()){
             do {
                 Score score = new Score();
@@ -46,6 +47,7 @@ public class GestorDB extends SQLiteOpenHelper {
                 score.setPuntaje(cursor.getInt(1));
                 score.setModo(cursor.getInt(2));
                 score.setDificultad(cursor.getInt(3));
+                score.setTiempo(cursor.getInt(4));
                 results.add(score);
 
             }while (cursor.moveToNext());
