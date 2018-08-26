@@ -22,19 +22,22 @@
 
 
         <RadioButton
+            android:id="@+id/rbtnFacil"
             android:layout_width="114dp"
             android:layout_height="wrap_content"
-            android:text="asd" />
+            android:text="Fácil" />
 
         <RadioButton
+            android:id="@+id/rbtnMedio"
             android:layout_width="114dp"
             android:layout_height="wrap_content"
-            android:text="asd" />
+            android:text="Medio" />
 
         <RadioButton
+            android:id="@+id/rbtnDificil"
             android:layout_width="114dp"
             android:layout_height="wrap_content"
-            android:text="asd" />
+            android:text="Difícil" />
 
 
     </RadioGroup>
@@ -149,6 +152,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Continuar"
+        android:onClick="salir"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"

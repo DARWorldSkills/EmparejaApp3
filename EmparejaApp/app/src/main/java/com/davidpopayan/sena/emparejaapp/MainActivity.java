@@ -2,6 +2,8 @@ package com.davidpopayan.sena.emparejaapp;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -9,6 +11,7 @@ import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,11 +19,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Slide;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     Animator animator1;
     Animator animator2;
 
-    private int fondoJuego = R.drawable.cartel;
+    private int fondoJuego = R.drawable.fondojugar;
 
     private int [] imagenesJuego = {
             R.drawable.agent,
@@ -119,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
         bandera1=true;
         juegoC= getSharedPreferences("juegoC",MODE_PRIVATE);
         tiempo = juegoC.getInt("tiempo",30);
-        segundos[0]=tiempo;
         nivel= MenuT.nivel;
         salir = nivel;
 
@@ -152,17 +156,17 @@ public class MainActivity extends AppCompatActivity {
         inicioJuego = (int) (Math.random() *2)+1;
         if (inicioJuego==1){
             txtNombreJ1.setTextColor(Color.BLACK);
-            txtNombreJ2.setTextColor(Color.WHITE);
+            txtNombreJ2.setTextColor(getColor(R.color.colorGris));
             txtPuntajeJ1.setTextColor(Color.BLACK);
-            txtPuntajeJ2.setTextColor(Color.WHITE);
+            txtPuntajeJ2.setTextColor(getColor(R.color.colorGris));
             Toast.makeText(this, "Empieza "+Splash.jugador1, Toast.LENGTH_SHORT).show();
 
 
         }else{
-            txtNombreJ1.setTextColor(Color.BLACK);
-            txtNombreJ2.setTextColor(Color.WHITE);
-            txtPuntajeJ1.setTextColor(Color.BLACK);
-            txtPuntajeJ2.setTextColor(Color.WHITE);
+            txtNombreJ2.setTextColor(Color.BLACK);
+            txtNombreJ1.setTextColor(getColor(R.color.colorGris));
+            txtPuntajeJ2.setTextColor(Color.BLACK);
+            txtPuntajeJ1.setTextColor(getColor(R.color.colorGris));;
             Toast.makeText(this, "Empieza "+Splash.jugador1, Toast.LENGTH_SHORT).show();
 
         }
@@ -172,6 +176,14 @@ public class MainActivity extends AppCompatActivity {
 
     //Mpetodo apra ingresar la puntuación
     private void inputPoints() {
+
+        if (puntajeJ1<0){
+            puntajeJ1=0;
+        }
+        if (puntajeJ2<0){
+            puntajeJ2=0;
+        }
+
         txtPuntajeJ1.setText(Integer.toString(puntajeJ1));
         txtPuntajeJ2.setText(Integer.toString(puntajeJ2));
     }
@@ -252,11 +264,96 @@ public class MainActivity extends AppCompatActivity {
 
     //Método para finalizar el juego
     private void endGame() {
-        if (segundos[0]==tiempo|| salir==0){
+        if (segundos[0]==tiempo){
             bandera=false;
             bandera1=false;
             win.stop();
             endstage.start();
+
+            final Dialog dialog = new Dialog(MainActivity.this);
+            dialog.setContentView(R.layout.item_resumen);
+            TextView txtJugador1 = dialog.findViewById(R.id.txtJugador1);
+            TextView txtJugador2 = dialog.findViewById(R.id.txtJugador2);
+            TextView txtPunJ1 = dialog.findViewById(R.id.txtResultado1);
+            TextView txtPunJ2 = dialog.findViewById(R.id.txtResultado2);
+            TextView txtTiempoF = dialog.findViewById(R.id.txtTiempoF);
+            Button btnContianuar = dialog.findViewById(R.id.btnContianuar);
+            GestorDB gestorDB = new GestorDB(MainActivity.this);
+            Score score1 =new Score();
+            Score score2 =new Score();
+            score1.setNombre(Splash.jugador1);
+            score2.setNombre(Splash.jugador2);
+            score1.setPuntaje(puntajeJ1);
+            score2.setPuntaje(puntajeJ2);
+            score1.setModo(1);
+            score2.setModo(1);
+            score1.setDificultad(nivel);
+            score2.setDificultad(nivel);
+            score1.setTiempo(segundos[0]);
+            score2.setTiempo(segundos[0]);
+            gestorDB.inputData(score1);
+            gestorDB.inputData(score2);
+            txtJugador1.setText(score1.getNombre());
+            txtJugador2.setText(score2.getNombre());
+            txtPunJ1.setText(Integer.toString(score1.getPuntaje()));
+            txtPunJ2.setText(Integer.toString(score2.getPuntaje()));
+            txtTiempoF.setText(Integer.toString(segundos[0]));
+            btnContianuar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    dialog.cancel();
+                    finish();
+                }
+            });
+            final String messege = Splash.jugador1+" Puntuación: "+puntajeJ1+"\n"+
+                    Splash.jugador2+" Puntuación: "+puntajeJ2+"\n"+
+                    "Dificultad: "+nivel+"\n"+
+                    "Tiempo"+segundos[0]+"\n";
+            ImageButton btnTwi = dialog.findViewById(R.id.btnTwi);
+            ImageButton btnface = dialog.findViewById(R.id.btnFace);
+
+            btnTwi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.setPackage("com.twitter.android");
+                    intent.putExtra(Intent.EXTRA_TEXT, messege);
+
+                    try {
+                        startActivity(intent);
+
+                    }catch (Exception e){
+
+                        Toast.makeText(MainActivity.this, "No cuentas con esta app", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+
+                    }
+                }
+            });
+
+            btnface.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setQuote("")
+                            .setContentUrl(Uri.parse(""))
+                            .setShareHashtag(new ShareHashtag.Builder()
+                                    .setHashtag("")
+                                    .build())
+                            .build();
+
+                    if (shareDialog.canShow(ShareLinkContent.class)){
+
+                        shareDialog.show(content);
+                    }
+                }
+            });
+
+            dialog.setCancelable(false);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
 
 
         }
@@ -378,8 +475,100 @@ public class MainActivity extends AppCompatActivity {
 
                 salir--;
                 if (salir==0){
+                    bandera=false;
+                    bandera1=false;
+                    win.stop();
+                    endstage.start();
+                    final Dialog dialog = new Dialog(MainActivity.this);
+                    dialog.setContentView(R.layout.item_resumen);
+                    TextView txtJugador1 = dialog.findViewById(R.id.txtJugador1);
+                    TextView txtJugador2 = dialog.findViewById(R.id.txtJugador2);
+                    TextView txtPunJ1 = dialog.findViewById(R.id.txtResultado1);
+                    TextView txtPunJ2 = dialog.findViewById(R.id.txtResultado2);
+                    TextView txtTiempoF = dialog.findViewById(R.id.txtTiempoF);
+                    Button btnContianuar = dialog.findViewById(R.id.btnContianuar);
+                    GestorDB gestorDB = new GestorDB(MainActivity.this);
+                    Score score1 =new Score();
+                    Score score2 =new Score();
 
-                    endGame();
+                    score1.setNombre(Splash.jugador1);
+                    score2.setNombre(Splash.jugador2);
+                    score1.setPuntaje(puntajeJ1);
+                    score2.setPuntaje(puntajeJ2);
+                    score1.setModo(1);
+                    score2.setModo(1);
+                    score1.setDificultad(nivel);
+                    score2.setDificultad(nivel);
+                    score1.setTiempo(segundos[0]);
+                    score2.setTiempo(segundos[0]);
+                    gestorDB.inputData(score1);
+                    gestorDB.inputData(score2);
+                    txtJugador1.setText(score1.getNombre());
+                    txtJugador2.setText(score2.getNombre());
+                    txtPunJ1.setText(Integer.toString(score1.getPuntaje()));
+                    txtPunJ2.setText(Integer.toString(score2.getPuntaje()));
+                    txtTiempoF.setText(Integer.toString(segundos[0]));
+                    btnContianuar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            dialog.cancel();
+                            finish();
+                        }
+                    });
+                    final String messege = Splash.jugador1+" Puntuación: "+puntajeJ1+"\n"+
+                            Splash.jugador2+" Puntuación: "+puntajeJ2+"\n"+
+                            "Dificultad: "+nivel+"\n"+
+                            "Tiempo"+segundos[0]+"\n";
+                    ImageButton btnTwi = dialog.findViewById(R.id.btnTwi);
+                    ImageButton btnface = dialog.findViewById(R.id.btnFace);
+
+                    btnTwi.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("text/plain");
+                            intent.setPackage("com.twitter.android");
+                            intent.putExtra(Intent.EXTRA_TEXT, messege);
+
+                            try {
+                                startActivity(intent);
+
+                            }catch (Exception e){
+
+                                Toast.makeText(MainActivity.this, "No cuentas con esta app", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+
+                            }
+                        }
+                    });
+
+                    btnface.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            ShareLinkContent content = new ShareLinkContent.Builder()
+                                    .setQuote("")
+                                    .setContentUrl(Uri.parse(""))
+                                    .setShareHashtag(new ShareHashtag.Builder()
+                                            .setHashtag("")
+                                            .build())
+                                    .build();
+
+                            if (shareDialog.canShow(ShareLinkContent.class)){
+
+                                shareDialog.show(content);
+                            }
+
+                        }
+                    });
+
+                    dialog.setCancelable(false);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.show();
+
                 }
 
 
@@ -446,18 +635,18 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (inicioJuego==1){
-                    txtNombreJ1.setTextColor(Color.BLACK);
-                    txtNombreJ2.setTextColor(Color.WHITE);
-                    txtPuntajeJ1.setTextColor(Color.BLACK);
-                    txtPuntajeJ2.setTextColor(Color.WHITE);
+                    txtNombreJ2.setTextColor(Color.BLACK);
+                    txtNombreJ1.setTextColor(getColor(R.color.colorGris));
+                    txtPuntajeJ2.setTextColor(Color.BLACK);
+                    txtPuntajeJ1.setTextColor(getColor(R.color.colorGris));
                     inicioJuego=2;
 
 
                 }else{
-                    txtNombreJ2.setTextColor(Color.BLACK);
-                    txtNombreJ1.setTextColor(Color.WHITE);
-                    txtPuntajeJ2.setTextColor(Color.BLACK);
-                    txtPuntajeJ1.setTextColor(Color.WHITE);
+                    txtNombreJ1.setTextColor(Color.BLACK);
+                    txtNombreJ2.setTextColor(getColor(R.color.colorGris));
+                    txtPuntajeJ1.setTextColor(Color.BLACK);
+                    txtPuntajeJ2.setTextColor(getColor(R.color.colorGris));
                     inicioJuego=1;
 
                 }
